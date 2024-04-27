@@ -1,0 +1,86 @@
+ ------------------------------------------------------------------------------
+	Extend convert Susie Plug-in for developer    Copyright (c)2024 TORO
+ ------------------------------------------------------------------------------
+
+	本 Susie Plug-in は、Susie Plug-in を使ったアプリケーションの
+	開発者向けに Extend convert Susie Plug-in を調整したものです。
+
+	API の呼び出しをコンソールに出力する他、動作確認用のサンプル
+	画像・書庫を用意しています。
+
+	本テキストは、通常版との違いを主に説明しています。
+	設定ファイル xxextend_dev.cfg の説明等は、spextend.txt を
+	参照してください。
+
+
+●インストール
+
+	Susie Plug-in 用のディレクトリに
+	 axextend_dev.spi, axextend_dev.cfg / ifextend_dev.spi,
+	 ifextend_dev.cfg をコピーしてください。
+
+	64bit アプリケーションの場合は、拡張子が .sph、
+	ARM 64bit アプリケーションの場合は、拡張子が .spha になります。
+
+
+●動作
+
+	axextend_dev.cfg / ifextend_dev.cfg は sample ディレクトリにある
+	ファイルを参照するための設定です。
+	archive.test_archive に対して一通りの書庫操作ができるか、
+	RGB～.test_bmp の表示ができるかを確認してみてください。
+
+	RGB～.test_bmp は、.BMP ファイルの拡張子を変更したものであり、
+	色数や、格納方法をファイル名に記載した内容で保存してあります。
+
+	archive.test_archive は、RGB～.test_bmp をサンプル書庫内のファイル
+	としてコピーするためのダミーファイルです。
+
+	開発用 axextend_dev / ifextend_dev は、コンソール画面とログファイルに
+	API の呼び出し時の各値と、戻り値を出力します。
+	「●」付きの行はアプリケーション側で注意する必要がある内容のコメント
+	です。
+
+	尚、ログファイルは axextend_dev / ifextend_dev と同じディレクトリに
+	作成されます。
+
+
+●最後に
+
+	・このソフトウェアはフリーソフトウェアです。著作権は「TORO」、
+	  「高橋 良和」にあります。
+
+	・32bit版は、Borland C++ Version 5.02 を用いて構築しています。
+	  64bit版は、Visual Studio 2008 を用いて構築しています。
+
+
+●License
+
+Extend convert Susie Plug-in は、MITライセンスに基づいて公開しています。
+Extend convert Susie Plug-in is released under the MIT License.
+
+Copyright (c) 2017-2024 TORO
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the “Software”),
+to deal in the Software without restriction, including without limitation
+the rights to use, copy, modify, merge, publish, distribute, sublicense,
+and/or sell copies of the Software, and to permit persons to whom the Software
+is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included
+in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+
+●著作権者／連絡先／一次配布先					TORO／高橋 良和
+
+E-mail	toroid.jp@gmail.com
+WWW	http://toro.d.dooo.jp/	https://toroidj.github.io/

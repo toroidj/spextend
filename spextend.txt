@@ -1,0 +1,283 @@
+ ------------------------------------------------------------------------------
+	Extend convert Susie Plug-in  Version 1.3+3 Copyright (c)2017-2024 TORO
+ ------------------------------------------------------------------------------
+
+	ImageMagick 等の画像・書庫用のコマンドライン変換ソフトを
+	用いて各種ファイルを読み込むためのSusie Plug-in です。
+
+	また、64bitアプリケーション用のプラグインが用意されています。
+
+	Susie Plug-in は、竹村嘉人 (たけちん)氏作の画像ローダ「Susie」
+	用の Plug-in で、様々な形式の画像ファイルを読み込めるようにする
+	ためのものです。
+	( http://www.digitalpad.co.jp/~takechin/ )
+
+
+●動作環境
+・対応/動作確認 OS
+
+	Windows XP 以降で動作すると思います。
+	開発や主な動作確認は Windows 10 Pro 22H2 64bit で行っています。
+
+
+・レジストリ
+
+	レジストリは使用しません。
+
+
+●OS 以外に必要なソフトウェア
+
+	画像・書庫用のコマンドライン変換ソフトが必要です。
+
+	サンプルとして添付した axextend.cfg / ifextend.cfg では、以下の
+	ソフトを使用しています。
+
+	・ImageMagick ( http://imagemagick.org/ )の convert.exe
+	・Ghostscript ( https://www.ghostscript.com/download/gsdnld.html )の
+	  gswin32c.exe
+	・FFmpeg (https://ffmpeg.org/ )の ffmpeg.exe
+	・expand.exe ( Windows 添付 )
+	・spibench
+	 ( http://cetus.sakura.ne.jp/softlab/toolbox2/index.html#spibench )
+
+
+●インストール
+
+	Susie Plug-in 用のディレクトリに
+	 axextend.spi, axextend.cfg / ifextend.spi, ifextend.cfg を
+	 コピーしてください。
+
+	64bit アプリケーションの場合は、
+	 axextend.sph, axextend.cfg / ifextend.sph, ifextend.cfg を
+	 コピーしてください。
+
+	axextend.spi/sph は、書庫やマルチページ画像の展開用です。
+	ifextend.spi/sph は、画像形式の変換用です。
+
+	ARM 64bit アプリケーションの場合は、
+	 axextend.spha, axextend.cfg / ifextend.spha, ifextend.cfg を
+	 コピーしてください。
+
+
+●アンインストール
+
+	コピーした axextend.* / ifextend.* を削除してください。
+
+
+●動作
+
+	axextend / ifextend は、それぞれ axextend.cfg / ifextend.cfg に
+	記載された拡張子のファイルを指定されたときに、続けて記載された
+	コマンドラインを実行して、その結果を返します。
+
+	axextend は、コマンドラインを実行した結果、作成されたフォルダの
+	内容一覧を返しします。
+	ifextend は、コマンドラインを実行した結果、作成されたbmpファイルを
+	返します。
+
+
+・マルチスレッド動作
+
+	axextend は、複数の書庫をマルチスレッドやシングルスレッドで平行して
+	扱うことができません。一度に１つの書庫のみシングルスレッドか
+	マルチスレッドで扱えます（IsSupportedで指定した書庫のみ操作可能）。
+
+	ifextend は、画像をファイル経由で扱うとき、マルチスレッド・
+	シングルスレッドのどちらであっても複数を支障なく扱えます。
+	  画像をメモリ経由で扱うときは、マルチスレッド・シングルスレッドの
+	どちらであっても、スレッドあたり一度に１つの画像のみ扱えます。
+	（メモリ経由時は、IsSupportedで指定した画像のみ、同じスレッドで
+	  操作可能）
+
+
+●書庫用 Plug-in ( axextend ) の設定方法
+
+	axextend.cfg には、展開コマンドを記載します。
+	先頭が「;」の行はコメント行です。
+	axextend.cfg は、最初の一度しか読み込まないので更新したときは、
+	Plug-in を読み込み直す必要があります。
+	
+	次は、拡張子が pdf のファイルを Ghostscript の gswin32c.exe を
+	用いて、%TEMP% フォルダ内に jpeg 形式で展開する例です。
+
+*.pdf
+"C:\Program Files (x86)\gs\gs9.21\bin\gswin32c.exe" -dSAFER -dBATCH -dNOPAUSE -sDEVICE=jpeg -r200 -sOutputFile="%dst%\%03d.jpg" "%src%"
+
+	１行目には、「*.」の後に対応拡張子を記載します。
+	「*.pdf;*.tif」のように「;」で区切って複数記載することはできますが、
+	「*.p*;test*.dat」のようにワイルドカードを使用することはできません。
+
+	２行目以降には、実行するコマンドを記載します。
+	カレントフォルダは、実行元によって変化するため、コマンドはフルパスで
+	記載してください。また、%src%、%dst% 以外の環境変数は使えません。
+	他の環境変数を使いたい場合は、cmd.exe を介してください。
+	%src% は展開対象のファイル名(～\～.pdf)、%dst% は展開するフォルダ名
+	(%TEMP%内に作成される。末尾「\」なし)に展開されます。
+	３行以降を記載したときは順次実行されます。
+
+	展開したフォルダは、新しいファイルを展開するまで維持されます。
+
+	記載する内容は、サンプルファイルにあるように複数種類をブロック毎に
+	記載できます。
+
+	その他の機能は後述の「●設定ファイル詳細」を参照してください。
+
+
+●画像用 Plug-in ( ifextend ) の設定方法
+
+	ifextend.cfg には、bmp ファイルに変換するコマンドを記載します。
+	先頭が「;」の行はコメント行です。
+	ifextend.cfg は、最初の一度しか読み込まないので更新したときは、
+	Plug-in を読み込み直す必要があります。
+
+	また、画像情報を取得する API GetPictureInfo は、初期設定では
+	無効になっています。「EnableGetPictureInfo」が記載されている行が
+	あると GetPictureInfo が有効になります
+
+	次は、拡張子が gif ファイルを ImageMagick の convert.exe を
+	用いて、%TEMP% フォルダ内に変換した bmpファイルを作成する例です。
+
+*.gif
+"C:\Program Files\ImageMagick\convert.exe" "%src%" "%dst%"
+
+	「*.」の後に対応拡張子を記載します。
+	「*.jpg;*.tga」のように「;」で区切って複数記載することはできますが、
+	「*.p*;test*.dat」のようにワイルドカードを使用することはできません。
+
+	拡張子行以降には、実行するコマンドを記載します。
+	カレントフォルダは、実行元によって変化するため、コマンドはフルパスで
+	記載してください。また、%src%、%dst% 以外の環境変数は使えません。
+	他の環境変数を使いたい場合は、cmd.exe を介してください。
+	%src% は対象のファイル名(～\～.gif)、%dst% は変換したbmpファイル名
+	(%TEMP%内に作成される ～.bmp)に展開されます。
+	複数行にわたり記載したときは順次実行されます。
+
+	記載する内容は、サンプルファイルにあるように複数種類をブロック毎に
+	記載できます。
+
+	その他の機能は後述の「●設定ファイル詳細」を参照してください。
+
+
+●設定ファイル詳細
+
+	axextend.cfg / ifextend.cfg は、１ブロック毎に次のような記載が
+	できます。
+
+:タイトル
+*.ext1;*.ext2
+!console
+!log
+?show memo
+command1 %src% %dst%
+command2 %dst%
+>command3 %dst%
+&>command4 %dst%
+!pause
+
+	ブロックの頭に「:タイトル」を記載すると、そのタイトルをファイル
+	形式名として Plugin 呼び出し元に通知できます。
+
+	対応拡張子は、「;」で区切って複数記載できます。Plugin 呼び出し元に
+	よって記載できる文字数の制限が異なります(Susie の場合 約250文字)。
+
+	「!console」があると、コンソールウィンドウが表示され、ブロックの
+	終わりまで維持されます。
+
+	「!log」があると、実行するコマンドラインをダイアログ/コンソール
+	ウィンドウに表示します。
+
+	「!pause」があると、キー入力待ちになります。
+
+	「?」で始まる行は、その行をダイアログ/コンソールウィンドウに
+	表示します。コマンド実行はされません。動作確認用です。
+
+	先頭が「>」のときは、コンソールウィンドウが無いとき、コンソール
+	アプリケーションであってもコンソールウィンドウなしでコマンドを
+	実行します。
+	但し、コンソールがあることを前提にしているコマンドの動作がおかし
+	くなることがあります。
+
+	先頭が「&」のときは、コマンドの終了コードが 0 以外の時は展開に
+	失敗した扱いにします。「>」と併用するときは、「&>」と記載します。
+
+
+●64bit版 Susie Plug-in の仕様について
+
+	64bit版の正式な仕様がないため、独自仕様となります。
+	仕様は、次の場所で公開しています。
+
+	http://toro.d.dooo.jp/dlsphapi.html
+	https://toroidj.github.io/dlsphapi.html
+
+
+●最後に
+
+	・このソフトウェアはフリーソフトウェアです。著作権は「TORO」、
+	  「高橋 良和」にあります。
+
+	・32bit版は、Borland C++ Version 5.02 を用いて構築しています。
+	  64bit版は、Visual Studio 2008 を用いて構築しています。
+
+
+●License
+
+Extend convert Susie Plug-in は、MITライセンスに基づいて公開しています。
+Extend convert Susie Plug-in is released under the MIT License.
+
+Copyright (c) 2017-2024 TORO
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the “Software”),
+to deal in the Software without restriction, including without limitation
+the rights to use, copy, modify, merge, publish, distribute, sublicense,
+and/or sell copies of the Software, and to permit persons to whom the Software
+is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included
+in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+
+●履歴
+Version 1.3+3	2024/04/27
+・(ifextend)マルチスレッドに対応
+・実行するコマンドラインを表示する指定を追加(!log)
+
+Version 1.3+2	2024/03/30
+・(ifextend)BITMAPFILEHEADER の bfOffBits が 0 の BMP ファイルを読めるように
+・ARM64 版を作成
+
+Version 1.3+1	2021/09/04
+・ifextend.cfg の spibench の記載を修正
+
+Version 1.3	2018/11/03
+・(axextend)ディレクトリがあるとき「\」が漏れていたのを修正
+・(axextend)一部の環境で異常終了することがあるのを修正
+・(axextend)UNICODE版API(GetArchiveInfoW,GetFileW,GetFileInfoW)を追加
+・コンソールウィンドウ用のコマンドを追加(!console,!pause)
+
+Version 1.2	2018/08/11
+・APIが対応拡張子を返さないのを修正
+・設定ファイルに記載したタイトルをGetPluginInfoのファイル形式名とするように
+
+Version 1.1	2018/02/24
+・(ifextend)GetPictureInfoを機能させる設定を追加
+・コマンドの終了コードを参照できるようにした
+
+Version 1.0	2017/09/23
+・(ifextend)GetPictureがメモリ形式でも使えるように改善
+
+Version 0.3	2017/08/26
+
+
+●著作権者／連絡先／一次配布先					TORO／高橋 良和
+
+E-mail	toroid.jp@gmail.com
+WWW	http://toro.d.dooo.jp/
