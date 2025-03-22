@@ -27,7 +27,15 @@
 		#define BITSTRING "x86"
 	#endif
 #endif
+#ifndef _INTEGRAL_MAX_BITS
+	#ifdef _WIN64
+		#define _INTEGRAL_MAX_BITS 64
+	#else
+		#define _INTEGRAL_MAX_BITS 32
+	#endif
+#endif
 
+#define EX_LITTLE_ENDIAN	// リトルエンディアンに依存した記述の印
 //--------------------------------------------------------- 定数
 #define MAKE_WINTYPE(OSversion) (((OSversion).dwMajorVersion << 16) | (WORD)(OSversion).dwMinorVersion)
 //#define WINTYPE_95	0x40000
@@ -75,7 +83,7 @@
 #define PBiH	0x40000		// 1PiB(high dword)
 #define MAX16	0xffff
 #define MAX32	0xffffFFFF
-#ifdef _WIN64
+#if _INTEGRAL_MAX_BITS >= 64
 	#define MAX64	0xffffFFFFffffFFFF
 #endif
 #define BADPTR ((void *)(DWORD_PTR)-1)
@@ -92,15 +100,15 @@
 #define LCID_ENGLISH	0x409
 #define LCID_JAPANESE	0x411
 #define CP__US		437 // IBM437 常に使用可能。※WinNT4 JP では列挙できない
-#define CP__SJIS	932 // shift_jis 2000未満, Win9xではJP版のみ使用可能
+#define CP__SJIS	932 // shift_jis 2000未満, Win9xではJP版のみ使用可
 #define CP__UTF16L	1200 // utf-16 little endian .net のみ
 #define CP__UTF16B	1201 // unicodeFFFE big endian .net のみ
-#define CP__LATIN1	1252 // iso-8859-1 常に使用可能
+#define CP__LATIN1	1252 // iso-8859-1 常に使用可
 #define CP__JIS		50220 // ISO-2022 JIS X 0202-1984 .net のみ
 #define CP__JISSI	50222 // iso-2022-jp JIS X 0202-1984 (SI/SO有り) .net のみ
 #define CP__EUCJP	51932 // euc-jp .net のみ
 #define CP__NOPREC	50220 // CP__JIS, 50221, CP__JISSI, 50225, 50227, 50229 ,570002-11, UTF-7, 42 は MB_PRECOMPOSED が使用できない
-// CP_UTF7/CP_UTF8 は NT4 SP?/98SE? から使用可能
+// CP_UTF7/CP_UTF8 は NT4 SP?/98SE? から使用可
 #define INVALID_VALUE(type) ((type)(LONG_PTR)-1)
 
 #define T_DEFAULTFONTSIZE -13 // 約10point
@@ -262,7 +270,7 @@
 	#define tWinMain	wWinMain
 	#define tstrlen(ptr)	strlenW(ptr)
 	#define tstrcpy(dst, src)	strcpyW((dst), (src))
-	#define tstrcpypart(str1, str2, len)	{memcpy((char *)(WCHAR *)(str1), (const char *)(const WCHAR *)(str2), (len) * sizeof(WCHAR));*((WCHAR *)(str1) + len) = '\0';}
+	#define tstrcpypart(str1, str2, len)	{memcpy((char *)(WCHAR *)(str1), (const char *)(const WCHAR *)(str2), (len) * sizeof(WCHAR));*((WCHAR *)(str1) + (len)) = '\0';}
 	#define tstpcpy(dst, src)	stpcpyW((dst), (src))
 	#define tstrcat(dst, src)	strcatW((dst), (src))
 	#define tstrcmp(str1, str2)	strcmpW((str1), (str2))
@@ -297,7 +305,7 @@
 	#define tWinMain	WinMain
 	#define tstrlen(ptr)	strlen(ptr)
 	#define tstrcpy(dst, src)	strcpy((dst), (src))
-	#define tstrcpypart(str1, str2, len)	{memcpy((str1), (str2), (len));*((char *)(str1) + len) = '\0';}
+	#define tstrcpypart(str1, str2, len)	{memcpy((str1), (str2), (len));*((char *)(str1) + (len)) = '\0';}
 	#define tstpcpy(dst, src)	stpcpyA((dst), (src))
 	#define tstrcat(dst, src)	strcat((dst), (src))
 	#define tstrcmp(str1, str2)	strcmp((str1), (str2))
@@ -370,6 +378,7 @@
 				   // Microsoft 用定義
 	#define UnUsedParam(param) UNREFERENCED_PARAMETER(param)
 #endif
+
 #define USEFASTCALL __fastcall
 #define DLLEntry APIENTRY DllMain
 #define UNIONNAME(name, type) name.type
@@ -390,11 +399,11 @@
 typedef DWORD ERRORCODE;	// Win32API のエラーコード(GetLastError)
 #define IsTrue(form)	((form) != FALSE)
 #define IsFalse(form)	((form) == FALSE)
-#define setflag(flag, bit)	flag |= (bit)			//	特定フラグを立てる
-#define resetflag(flag, bit)	flag &= ~(bit)			//	特定フラグを下げる
+#define setflag(flag, bit)	flag |= (bit)  // 特定フラグを立てる
+#define resetflag(flag, bit)	flag &= ~(bit)  // 特定フラグを下げる
 #ifndef max
-	#define max(a, b) (((a) > (b)) ? (a) : (b))	//	大きいほうを返す
-	#define min(a, b) (((a) < (b)) ? (a) : (b))	//	小さいほうを返す
+	#define max(a, b) (((a) > (b)) ? (a) : (b))  // 大きいほうを返す
+	#define min(a, b) (((a) < (b)) ? (a) : (b))  // 小さいほうを返す
 #endif
 #define LPARAMtoPOINT(pos, lParam) {(pos).x=(int)(short)LOWORD(lParam);(pos).y=(int)(short)HIWORD(lParam);}
 #define GetMessagePosPoint(pos) {DWORD dpos = GetMessagePos();LPARAMtoPOINT((pos), (dpos));}
@@ -412,15 +421,15 @@ typedef DWORD ERRORCODE;	// Win32API のエラーコード(GetLastError)
 #define CharUPR(chr)	{if (Islower(chr)) (chr) -= (BYTE)0x20;}
 
 typedef union {
-	struct { // エンディアン注意
+	EX_LITTLE_ENDIAN struct {
 		DWORD LowPart;
 		LONG HighPart;
 	} u;
-	struct { // エンディアン注意
+	EX_LITTLE_ENDIAN struct {
 		DWORD L;
 		LONG H;
 	} s;
-#ifdef _WIN64
+#if _INTEGRAL_MAX_BITS >= 64
 	__int64 QuadPart;
 	__int64 HL;
 #endif
@@ -428,15 +437,15 @@ typedef union {
 } INTHL;
 
 typedef union {
-	struct { // エンディアン注意
+	EX_LITTLE_ENDIAN struct {
 		DWORD LowPart;
 		DWORD HighPart;
 	} u;
-	struct { // エンディアン注意
+	EX_LITTLE_ENDIAN struct {
 		DWORD L;
 		DWORD H;
 	} s;
-#ifdef _WIN64
+#if _INTEGRAL_MAX_BITS >= 64
 	unsigned __int64 QuadPart;
 	unsigned __int64 HL;
 #endif
@@ -451,7 +460,7 @@ typedef union {
 // ↑ dstL -= srcL;dstL + srcL;if ( C flag ) dstH--; と最適化される
 // #  dstL -= srcL;if ( C flag ) dstH--; と最適化されると嬉しいのだが(^^;
 
-#ifdef _WIN64
+#if _INTEGRAL_MAX_BITS >= 64
 	#define LetHL_0(dstIntHL) {(dstIntHL).QuadPart = 0;}
 	#define LetHLHL(dstIntHL, srcIntHL) {(dstIntHL).QuadPart = (srcIntHL).QuadPart;}
 	#define AddHLHL(dstIntHL, srcIntHL) {(dstIntHL).QuadPart += (srcIntHL).QuadPart;}
@@ -462,13 +471,13 @@ typedef union {
 	// WIN32_FIND_DATA / WIN32_FILE_ATTRIBUTE_DATA / BY_HANDLE_FILE_INFORMATION の nFileSize 操作用
 	// ※ nFileSize は nFileSizeHigh , nFileSizeLow の順に配置されている
 	#define AddMaskedFilesize(dstIntHL, Fsize, andL, addL)\
-		{(dstIntHL).HL += ((size_t)((Fsize).nFileSizeLow) + ((size_t)(Fsize).nFileSizeHigh << 32) + (size_t)(addL)) & (size_t)(andL);}
+		{(dstIntHL).HL += ((__int64)((Fsize).nFileSizeLow) + ((__int64)(Fsize).nFileSizeHigh << 32) + (__int64)(addL)) & (__int64)(andL);}
 
 	#define AddHLFilesize(dstIntHL, Fsize)\
-		{(dstIntHL).QuadPart += (size_t)(Fsize).nFileSizeLow + ((size_t)(Fsize).nFileSizeHigh << 32);}
+		{(dstIntHL).QuadPart += (__int64)(Fsize).nFileSizeLow + ((__int64)(Fsize).nFileSizeHigh << 32);}
 
 	#define SubHLFilesize(dstIntHL, Fsize)\
-		{(dstIntHL).QuadPart -= (size_t)(Fsize).nFileSizeLow + ((size_t)(Fsize).nFileSizeHigh << 32);}
+		{(dstIntHL).QuadPart -= (__int64)(Fsize).nFileSizeLow + ((__int64)(Fsize).nFileSizeHigh << 32);}
 #else
 	#define LetHL_0(dstIntHL) {(dstIntHL).u.LowPart = (dstIntHL).u.HighPart = 0;}
 	#define LetHLHL(dstIntHL, srcIntHL) {(dstIntHL) = (srcIntHL);}
@@ -579,7 +588,7 @@ typedef union {
 	#define strlwr CharLowerA
 //	#define ImmAssociateContext(hWnd, hIMC) // 定義されていない
 #endif
-#ifdef __ms_va_list // wine で変更されている va_list
+#if defined(WINEGCC) && (WINEGCC < 900) // wine で変更されている va_list
 	#define t_va_list __ms_va_list
 	#define t_va_start __ms_va_start
 	#define t_va_end __ms_va_end
@@ -592,15 +601,23 @@ typedef union {
 #endif
 
 // Win64
-#if 1 // 現在のWin64 は 64bit pointer をフルに使用していない
-	#define PTRMAX64 0x00000fffffffffff
-	#define PTRUSERMAX64 0x0000080000000000
+#if 1 // PML4 現在のWin64 は 64bit pointer をフルに使用していない
+	#define PTRMAX64     0x0000ffffffffffff
+	#define PTRUSERMAX64 0x0000800000000000
 	#define PTR64SHORT
 	#define PTRLEN64 12
+	#define MEMPAGESIZE 4096 // 4K,4M(PSE)
 #else
-	#define PTRMAX64 0xffffffffffffffff
-	#define PTRUSERMAX64 0x8000000000000000
-	#define PTRLEN64 16
+	#if 1 // PML5(Ice Lake, serverのみ)
+		#define PTRMAX64     0x01ffffffffffffff
+		#define PTRUSERMAX64 0x0100000000000000
+		#define PTRLEN64 15
+	#else
+		#define PTRMAX64     0xffffffffffffffff
+		#define PTRUSERMAX64 0x8000000000000000
+		#define PTRLEN64 16
+	#endif
+	#define MEMPAGESIZE 4096 // 4K,2M,1G
 #endif
 #define PTRPRINTFORMAT64 "%I64X" // "%p" だと、行頭 0 付きになる
 #define PTRPRINTFORMAT32 "%X" // "%p"

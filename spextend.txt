@@ -1,5 +1,5 @@
  ------------------------------------------------------------------------------
-	Extend convert Susie Plug-in  Version 1.3+3 Copyright (c)2017-2024 TORO
+	Extend convert Susie Plug-in  Version 1.4  Copyright (c)2017-2025 TORO
  ------------------------------------------------------------------------------
 
 	ImageMagick 等の画像・書庫用のコマンドライン変換ソフトを
@@ -224,7 +224,7 @@ command2 %dst%
 Extend convert Susie Plug-in は、MITライセンスに基づいて公開しています。
 Extend convert Susie Plug-in is released under the MIT License.
 
-Copyright (c) 2017-2024 TORO
+Copyright (c) 2025 TORO
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”),
@@ -246,16 +246,13 @@ SOFTWARE.
 
 
 ●履歴
-Version 1.3+3	2024/04/27
-・(ifextend)マルチスレッドに対応
-・実行するコマンドラインを表示する指定を追加(!log)
-
-Version 1.3+2	2024/03/30
-・(ifextend)BITMAPFILEHEADER の bfOffBits が 0 の BMP ファイルを読めるように
+Version 1.4	2025/03/22
+・ライセンスをMITライセンスに変更
 ・ARM64 版を作成
-
-Version 1.3+1	2021/09/04
+・実行するコマンドラインを表示する指定を追加(!log)
 ・ifextend.cfg の spibench の記載を修正
+・(ifextend)マルチスレッドに対応
+・(ifextend)BITMAPFILEHEADER の bfOffBits が 0 の BMP ファイルを読めるように
 
 Version 1.3	2018/11/03
 ・(axextend)ディレクトリがあるとき「\」が漏れていたのを修正
@@ -279,5 +276,5 @@ Version 0.3	2017/08/26
 
 ●著作権者／連絡先／一次配布先					TORO／高橋 良和
 
-E-mail	toroid.jp@gmail.com
-WWW	http://toro.d.dooo.jp/
+E-mail  toroid.jp@gmail.com
+WWW     http://toro.d.dooo.jp/	https://toroidj.github.io/

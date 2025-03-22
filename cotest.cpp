@@ -211,14 +211,14 @@ char *DumpIsSupported_Result(int result)
 	return result ? "support" : "not support";
 }
 
-void DumpIsSupported_dw(void *dw)
+void DumpIsSupported_dw(const void *dw)
 {
 	if ( (LONG_PTR)dw & ~0xffff ){ // mem
 		printoutf("  dw is memory\r\n");
-		DumpOut((char *)dw, 0);
-		DumpOut((char *)dw + 16, 16);
+		DumpOut((const char *)dw, 0);
+		DumpOut((const char *)dw + 16, 16);
 		printoutf("    :\r\n");
-		DumpOut((char *)dw + SUSIE_CHECK_SIZE - 16, SUSIE_CHECK_SIZE - 16);
+		DumpOut((const char *)dw + SUSIE_CHECK_SIZE - 16, SUSIE_CHECK_SIZE - 16);
 	}else{ // handle
 		printoutf("  dw is file handle(pointer: %d) Åúmemory Ç…ïœçXÇêÑèß\r\n",
 				SetFilePointer((HANDLE)dw, 0, NULL, FILE_CURRENT) );
@@ -226,7 +226,7 @@ void DumpIsSupported_dw(void *dw)
 }
 
 #define DumpIsSupported(result) DumpIsSupportedMain(filename, dw, result)
-int DumpIsSupportedMain(LPCSTR filename, void *dw, int result)
+int DumpIsSupportedMain(LPCSTR filename, const void *dw, int result)
 {
 	ThreadCheck();
 	printoutf(P_ProductName " IsSupported(\"%s\", 0x%p) = %d(%s)\r\n", filename, dw, result, DumpIsSupported_Result(result));
@@ -235,7 +235,7 @@ int DumpIsSupportedMain(LPCSTR filename, void *dw, int result)
 }
 
 #define DumpIsSupportedW(result) DumpIsSupportedWMain(filename, dw, result)
-int DumpIsSupportedWMain(LPCWSTR filename, void *dw, int result)
+int DumpIsSupportedWMain(LPCWSTR filename, const void *dw, int result)
 {
 	ThreadCheck();
 	printoutf(P_ProductName " IsSupportedW(L\"%ls\", 0x%p) = %d(%s)\r\n", filename, dw, result, DumpIsSupported_Result(result));

@@ -3,7 +3,7 @@
 ----------------------------------------------------------------------------*/
 #include "susie.h"
 
-#define CopyrightSusie	"1.3+3 Copyright (c)2017-2024 TORO"
+#define CopyrightSusie	"1.4 Copyright (c)2017-2025 TORO"
 
 #define LINESIZE 0x800
 #define InfoCount 2
@@ -394,10 +394,11 @@ void tstrreplace(TCHAR *text, const TCHAR *targetword, const TCHAR *replaceword)
 }
 
 #pragma argsused
-extern "C" int __stdcall IsSupportedW(LPCWSTR filename, void *dw)
+extern "C" int __stdcall IsSupportedW(LPCWSTR filename, const void *dw)
 {
 	TLSDATA *tls;
 	DWORD offset;
+	UnUsedParam(dw); // DumpIsSupported の内容次第では使用しない
 
 	if ( 0 == DumpIsSupportedW(FindCommand(filename, offset)) ){
 		// 該当しない→キャッシュを廃棄
@@ -415,11 +416,12 @@ extern "C" int __stdcall IsSupportedW(LPCWSTR filename, void *dw)
 }
 
 #pragma argsused
-extern "C" int __stdcall IsSupported(LPCSTR filename, void *dw)
+extern "C" int __stdcall IsSupported(LPCSTR filename, const void *dw)
 {
 	TLSDATA *tls;
 	DWORD offset;
 	WCHAR nameW[MAX_PATH];
+	UnUsedParam(dw); // DumpIsSupported の内容次第では使用しない
 
 	if ( filename == NULL ){
 		return 0;

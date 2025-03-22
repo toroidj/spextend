@@ -1,5 +1,5 @@
 /*----------------------------------------------------------------------------
-	Extend Images convert Susie Plug-in	Copyright (c) TORO
+	Extend Images convert Susie Plug-in  Copyright (c) TORO
 ----------------------------------------------------------------------------*/
 #define STRICT
 #define UNICODE

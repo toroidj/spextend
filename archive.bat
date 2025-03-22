@@ -1,8 +1,8 @@
 @echo off
 set RETAIL=1
 rem *** set value ***
-set arcname=spextend13p3.zip
-set arcdevname=spextend_dev13p3.zip
+set arcname=spextend14.zip
+set arcdevname=spextend_dev14.zip
 set readme=spextend.txt
 set srcname=spextend.7z
 
@@ -28,6 +28,7 @@ if %RETAIL%==0 goto :skipsource
 
 for %%i in (*) do CT %readme% %%i
 ppb /c %%u/7-zip32.dll,a %srcname% -hide -mx=9 makefile *.vcproj *.sln *.def *.bat *.c *.cpp *.h *.rc *.rh VS2017\*.sln VS2017\axextend\*.vcxproj VS2017\ifextend\*.vcxproj
+tfilesign sf %srcname% %srcname%
 CT %readme% %srcname%
 :skipsource
 

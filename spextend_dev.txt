@@ -1,5 +1,5 @@
  ------------------------------------------------------------------------------
-	Extend convert Susie Plug-in for developer    Copyright (c)2024 TORO
+	Extend convert Susie Plug-in for developer    Copyright (c)2025 TORO
  ------------------------------------------------------------------------------
 
 	本 Susie Plug-in は、Susie Plug-in を使ったアプリケーションの
@@ -59,7 +59,7 @@
 Extend convert Susie Plug-in は、MITライセンスに基づいて公開しています。
 Extend convert Susie Plug-in is released under the MIT License.
 
-Copyright (c) 2017-2024 TORO
+Copyright (c) 2025 TORO
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”),
@@ -82,5 +82,5 @@ SOFTWARE.
 
 ●著作権者／連絡先／一次配布先					TORO／高橋 良和
 
-E-mail	toroid.jp@gmail.com
-WWW	http://toro.d.dooo.jp/	https://toroidj.github.io/
+E-mail  toroid.jp@gmail.com
+WWW     http://toro.d.dooo.jp/	https://toroidj.github.io/
